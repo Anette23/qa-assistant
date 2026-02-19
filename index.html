@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="app">
 
   <header>
@@ -23,32 +22,54 @@
     </div>
   </header>
 
+  <!-- Workflow bar -->
+  <div class="workflow-bar">
+    <div class="workflow-step active" data-tab="plan"><span class="wf-num">1</span><span class="wf-label">Test Plan</span></div>
+    <div class="workflow-arrow">›</div>
+    <div class="workflow-step" data-tab="testcase"><span class="wf-num">2</span><span class="wf-label">Test Cases</span></div>
+    <div class="workflow-arrow">›</div>
+    <div class="workflow-step" data-tab="acceptance"><span class="wf-num">3</span><span class="wf-label">Acceptance</span></div>
+    <div class="workflow-arrow">›</div>
+    <div class="workflow-step" data-tab="execution"><span class="wf-num">4</span><span class="wf-label">Execution</span></div>
+    <div class="workflow-arrow">›</div>
+    <div class="workflow-step" data-tab="bug"><span class="wf-num">5</span><span class="wf-label">Bug Report</span></div>
+    <div class="workflow-arrow">›</div>
+    <div class="workflow-step" data-tab="notes"><span class="wf-num">6</span><span class="wf-label">Test Notes</span></div>
+    <div class="workflow-arrow">›</div>
+    <div class="workflow-step" data-tab="review"><span class="wf-num">7</span><span class="wf-label">Review</span></div>
+  </div>
+
   <!-- Mode Tabs -->
   <div class="mode-tabs">
-    <button class="tab-btn active" onclick="switchTab('testcase')">
-      <span class="tab-icon">🧪</span>
-      <span class="tab-label">Test Case</span>
-      <span class="tab-desc">Testovacie prípady</span>
+    <button class="tab-btn active" onclick="switchTab('plan')">
+      <span class="tab-icon">🗺️</span>
+      <span class="tab-label">Test Plan</span>
+      <span class="tab-desc">Plán testovania</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('bug')">
-      <span class="tab-icon">🐛</span>
-      <span class="tab-label">Bug Report</span>
-      <span class="tab-desc">Popis chyby</span>
+    <button class="tab-btn" onclick="switchTab('testcase')">
+      <span class="tab-icon">🧪</span>
+      <span class="tab-label">Test Cases</span>
+      <span class="tab-desc">Testovacie prípady</span>
     </button>
     <button class="tab-btn" onclick="switchTab('acceptance')">
       <span class="tab-icon">✅</span>
       <span class="tab-label">Acceptance</span>
       <span class="tab-desc">Kritériá akceptácie</span>
     </button>
+    <button class="tab-btn" onclick="switchTab('execution')">
+      <span class="tab-icon">▶️</span>
+      <span class="tab-label">Execution</span>
+      <span class="tab-desc">Spustiť testy</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('bug')">
+      <span class="tab-icon">🐛</span>
+      <span class="tab-label">Bug Report</span>
+      <span class="tab-desc">Popis chyby</span>
+    </button>
     <button class="tab-btn" onclick="switchTab('notes')">
       <span class="tab-icon">📋</span>
       <span class="tab-label">Test Notes</span>
       <span class="tab-desc">Poznámky & zhrnutia</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('plan')">
-      <span class="tab-icon">🗺️</span>
-      <span class="tab-label">Test Plan</span>
-      <span class="tab-desc">Plán testovania</span>
     </button>
     <button class="tab-btn" onclick="switchTab('review')">
       <span class="tab-icon">🔍</span>
@@ -57,17 +78,110 @@
     </button>
   </div>
 
-  <div class="main-grid">
+  <!-- ══ EXECUTION VIEW (full width) ══ -->
+  <div id="execution-view" style="display:none;">
+    <div class="exec-top">
+      <div class="exec-stats">
+        <div class="stat-box pass"><span id="statPass">0</span><small>Pass</small></div>
+        <div class="stat-box fail"><span id="statFail">0</span><small>Fail</small></div>
+        <div class="stat-box blocked"><span id="statBlocked">0</span><small>Blocked</small></div>
+        <div class="stat-box skipped"><span id="statSkipped">0</span><small>Skipped</small></div>
+        <div class="stat-box total"><span id="statTotal">0</span><small>Total</small></div>
+      </div>
+      <div class="exec-top-actions">
+        <button class="btn-sm" onclick="clearExecution()">Vymazať session</button>
+        <button class="btn-accent" onclick="generateExecSummary()">📋 Generovať Summary</button>
+      </div>
+    </div>
 
-    <!-- Left: Input Panel -->
+    <div class="exec-main">
+      <!-- Generate panel -->
+      <div class="panel exec-generate-panel" id="execGeneratePanel">
+        <div class="panel-header"><span class="panel-title">Generovať test cases na exekúciu</span></div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label>Funkcia / Feature</label>
+            <input type="text" id="exec-feature" placeholder="napr. Registrácia užívateľa">
+          </div>
+          <div class="form-group">
+            <label>Popis</label>
+            <textarea id="exec-desc" placeholder="Opíš čo má funkcia robiť..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Typ testov</label>
+            <select id="exec-type">
+              <option value="functional">Funkčné</option>
+              <option value="negative">Negatívne</option>
+              <option value="all" selected>Všetky typy</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Počet</label>
+            <select id="exec-count">
+              <option value="3">3 test cases</option>
+              <option value="5" selected>5 test cases</option>
+              <option value="8">8 test cases</option>
+            </select>
+          </div>
+          <button class="btn-generate" onclick="generateForExecution()">
+            <span>Generovať & spustiť exekúciu</span><span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Test list -->
+      <div id="execTestList" class="exec-list-panel"></div>
+    </div>
+
+    <!-- Summary output -->
+    <div id="execSummaryPanel" class="panel exec-summary-panel" style="display:none;">
+      <div class="panel-header">
+        <span class="panel-title">Execution Summary</span>
+        <button class="btn-sm" onclick="copyExecSummary()">Kopírovať</button>
+      </div>
+      <div class="panel-body" id="execSummaryContent"></div>
+    </div>
+  </div>
+
+  <!-- ══ STANDARD 2-COL VIEW ══ -->
+  <div id="standard-view" class="main-grid">
+
     <div class="panel">
       <div class="panel-header">
-        <span class="panel-title" id="inputPanelTitle">Test Case Generator</span>
+        <span class="panel-title" id="inputPanelTitle">Test Plan Generator</span>
       </div>
       <div class="panel-body">
 
+        <!-- TEST PLAN -->
+        <div class="mode-form active" id="form-plan">
+          <div class="form-group">
+            <label>Projekt / Produkt</label>
+            <input type="text" id="plan-project" placeholder="napr. E-shop platobný systém">
+          </div>
+          <div class="form-group">
+            <label>Rozsah testovania (Scope)</label>
+            <textarea id="plan-scope" placeholder="Čo bude a čo nebude predmetom testovania..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Typ projektu</label>
+            <select id="plan-type">
+              <option value="web">Web aplikácia</option>
+              <option value="mobile">Mobilná aplikácia</option>
+              <option value="api">API / Backend</option>
+              <option value="desktop">Desktop aplikácia</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Časový rámec</label>
+            <input type="text" id="plan-timeline" placeholder="napr. 2 týždne, Sprint #5">
+          </div>
+          <button class="btn-generate" onclick="generate('plan')">
+            <span>Generovať Test Plan</span><span>→</span>
+          </button>
+        </div>
+
         <!-- TEST CASE -->
-        <div class="mode-form active" id="form-testcase">
+        <div class="mode-form" id="form-testcase">
           <div class="form-group">
             <label>Funkcia / Feature</label>
             <input type="text" id="tc-feature" placeholder="napr. Prihlásenie užívateľa">
@@ -96,8 +210,30 @@
             </select>
           </div>
           <button class="btn-generate" onclick="generate('testcase')">
-            <span>Generovať test cases</span>
-            <span>→</span>
+            <span>Generovať test cases</span><span>→</span>
+          </button>
+        </div>
+
+        <!-- ACCEPTANCE -->
+        <div class="mode-form" id="form-acceptance">
+          <div class="form-group">
+            <label>User Story</label>
+            <textarea id="ac-story" placeholder="Ako [rola] chcem [akcia] aby som [benefit]..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Kontext / Obmedzenia</label>
+            <textarea id="ac-context" placeholder="Doplňujúce informácie, edge cases, obmedzenia..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Formát</label>
+            <select id="ac-format">
+              <option value="gherkin">Gherkin (Given/When/Then)</option>
+              <option value="checklist">Checklist</option>
+              <option value="both">Oboje</option>
+            </select>
+          </div>
+          <button class="btn-generate" onclick="generate('acceptance')">
+            <span>Generovať Acceptance Criteria</span><span>→</span>
           </button>
         </div>
 
@@ -122,10 +258,10 @@
           <div class="form-group">
             <label>Závažnosť (Severity)</label>
             <div class="badge-row">
-              <span class="badge critical" onclick="selectBadge(this,'severity')">Critical</span>
-              <span class="badge high" onclick="selectBadge(this,'severity')">High</span>
-              <span class="badge medium selected" onclick="selectBadge(this,'severity')">Medium</span>
-              <span class="badge low" onclick="selectBadge(this,'severity')">Low</span>
+              <span class="badge critical" onclick="selectBadge(this)">Critical</span>
+              <span class="badge high" onclick="selectBadge(this)">High</span>
+              <span class="badge medium selected" onclick="selectBadge(this)">Medium</span>
+              <span class="badge low" onclick="selectBadge(this)">Low</span>
             </div>
           </div>
           <div class="form-group">
@@ -133,32 +269,7 @@
             <input type="text" id="bug-env" placeholder="napr. Chrome 121, macOS, staging">
           </div>
           <button class="btn-generate" onclick="generate('bug')">
-            <span>Generovať Bug Report</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        <!-- ACCEPTANCE CRITERIA -->
-        <div class="mode-form" id="form-acceptance">
-          <div class="form-group">
-            <label>User Story</label>
-            <textarea id="ac-story" placeholder="Ako [rola] chcem [akcia] aby som [benefit]..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>Kontext / Obmedzenia</label>
-            <textarea id="ac-context" placeholder="Doplňujúce informácie, edge cases, obmedzenia..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>Formát</label>
-            <select id="ac-format">
-              <option value="gherkin">Gherkin (Given/When/Then)</option>
-              <option value="checklist">Checklist</option>
-              <option value="both">Oboje</option>
-            </select>
-          </div>
-          <button class="btn-generate" onclick="generate('acceptance')">
-            <span>Generovať Acceptance Criteria</span>
-            <span>→</span>
+            <span>Generovať Bug Report</span><span>→</span>
           </button>
         </div>
 
@@ -182,37 +293,7 @@
             </select>
           </div>
           <button class="btn-generate" onclick="generate('notes')">
-            <span>Generovať poznámky</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        <!-- TEST PLAN -->
-        <div class="mode-form" id="form-plan">
-          <div class="form-group">
-            <label>Projekt / Produkt</label>
-            <input type="text" id="plan-project" placeholder="napr. E-shop platobný systém">
-          </div>
-          <div class="form-group">
-            <label>Rozsah testovania (Scope)</label>
-            <textarea id="plan-scope" placeholder="Čo bude a čo nebude predmetom testovania..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>Typ projektu</label>
-            <select id="plan-type">
-              <option value="web">Web aplikácia</option>
-              <option value="mobile">Mobilná aplikácia</option>
-              <option value="api">API / Backend</option>
-              <option value="desktop">Desktop aplikácia</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Časový rámec</label>
-            <input type="text" id="plan-timeline" placeholder="napr. 2 týždne, Sprint #5">
-          </div>
-          <button class="btn-generate" onclick="generate('plan')">
-            <span>Generovať Test Plan</span>
-            <span>→</span>
+            <span>Generovať poznámky</span><span>→</span>
           </button>
         </div>
 
@@ -228,19 +309,18 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Vložený obsah (test case / bug report na review)</label>
+            <label>Obsah na review</label>
             <textarea id="review-content" placeholder="Vlož text, ktorý chceš reviewovať..." style="min-height:140px;"></textarea>
           </div>
           <button class="btn-generate" onclick="generate('review')">
-            <span>Spustiť Review</span>
-            <span>→</span>
+            <span>Spustiť Review</span><span>→</span>
           </button>
         </div>
 
       </div>
     </div>
 
-    <!-- Right: Output Panel -->
+    <!-- Output Panel -->
     <div class="output-panel">
       <div class="output-header">
         <span class="panel-title">Výstup</span>
@@ -268,7 +348,6 @@
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script src="app.js"></script>
 </body>
 </html>
