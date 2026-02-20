@@ -2,9 +2,6 @@
 
 > A complete, single-page web app that guides you through the full QA workflow — from test planning to execution tracking — powered by Claude AI.
 
-
----
-
 ## ✨ Features
 
 The app follows a real QA workflow — each tab represents a phase you'd go through in an actual testing cycle:
@@ -45,11 +42,9 @@ The Execution tab works like a lightweight TestRail:
 
 ## 🛠️ How to Use
 
-1. **Get an API key** — sign up at [console.anthropic.com](https://console.anthropic.com) and generate a free API key
-2. **Open the app** — no installation needed, runs entirely in the browser
-3. **Enter your API key** — paste it into the top-right field and click Save
-4. **Follow the workflow** — start with Test Plan, work through each step
-5. **Copy & paste outputs** — use results directly in Jira, Confluence, Notion or any tool
+1. **Open the app** — no installation needed, runs entirely in the browser
+2. **Follow the workflow** — start with Test Plan, work through each step
+3. **Copy & paste outputs** — use results directly in Jira, Confluence, Notion or any tool
 
 ---
 
@@ -69,18 +64,9 @@ The Execution tab works like a lightweight TestRail:
 
 - **Pure HTML / CSS / JavaScript** — no frameworks, no build tools, no dependencies
 - **Anthropic Claude API** — `claude-sonnet-4-20250514` model
+- **Cloudflare Workers** — secure API proxy, no API key needed from the user
 - **localStorage** — execution sessions persist across page refreshes
 - **3 files** — easy to deploy anywhere
-
----
-
-## 🔑 API Key
-
-This app requires an **Anthropic API key** to function.
-
-- Get yours at [console.anthropic.com](https://console.anthropic.com)
-- New accounts receive free credits to get started
-- Your key is stored **only in your browser's localStorage** — it is never sent anywhere except directly to Anthropic's API
 
 ---
 
