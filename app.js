@@ -126,7 +126,6 @@ Odpoveď vráť VÝHRADNE v JSON (žiadny markdown):
       headers: {
         'Content-Type': 'application/json',
         // API key handled by Worker
-        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
@@ -338,7 +337,6 @@ Odpoveď vráť VÝHRADNE v JSON (žiadny markdown):
       headers: {
         'Content-Type': 'application/json',
         // API key handled by Worker
-        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
@@ -514,7 +512,6 @@ async function generate(tab) {
       headers: {
         'Content-Type': 'application/json',
         // API key handled by Worker
-        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
