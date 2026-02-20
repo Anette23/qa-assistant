@@ -130,7 +130,7 @@ Odpoveď vráť VÝHRADNE v JSON (žiadny markdown):
 }`;
 
   try {
-    const response = await fetch('https://qa-assistant.anet-krajcovicovie.workers.dev', {
+    const response = await fetch('https://qa-proxy.anet-krajcovicovie.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -343,7 +343,7 @@ Odpoveď vráť VÝHRADNE v JSON (žiadny markdown):
 }`;
 
   try {
-    const response = await fetch('https://qa-assistant.anet-krajcovicovie.workers.dev', {
+    const response = await fetch('https://qa-proxy.anet-krajcovicovie.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -520,7 +520,7 @@ async function generate(tab) {
     '<div class="result-empty"><div class="empty-icon typing-cursor"></div><p style="color:var(--accent)">AI generuje výstup...</p></div>';
 
   try {
-    const response = await fetch('https://qa-assistant.anet-krajcovicovie.workers.dev', {
+    const response = await fetch('https://qa-proxy.anet-krajcovicovie.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
