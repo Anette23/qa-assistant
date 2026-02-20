@@ -5,29 +5,21 @@
 let currentTab = 'plan';
 let selectedSeverity = 'medium';
 let generationCount = 0;
-let apiKey = localStorage.getItem('qa_api_key') || '';
+let apiKey = 'hidden'; // API key is stored securely in Cloudflare Worker
 
 // Execution state (persisted to localStorage)
 let execSession = loadExecSession();
 
 // ── Init ──────────────────────────────────
-if (apiKey) {
-  document.getElementById('apiKeyInput').value = apiKey;
-  document.getElementById('statusDot').classList.add('active');
-}
+document.getElementById('statusDot').classList.add('active');
 
 switchTab('plan');
 renderExecList();
 updateExecStats();
 
-// ── API Key ───────────────────────────────
+// ── API Key (not needed, handled by Worker) ───────────────────────────────
 function saveKey() {
-  apiKey = document.getElementById('apiKeyInput').value.trim();
-  if (apiKey) {
-    localStorage.setItem('qa_api_key', apiKey);
-    document.getElementById('statusDot').classList.add('active');
-    showToast('✓ API kľúč uložený');
-  }
+  showToast('✓ Pripojené!');
 }
 
 // ── LocalStorage helpers ──────────────────
@@ -93,7 +85,6 @@ function selectBadge(el) {
 // ═══════════════════════════════════════════
 
 async function generateForExecution() {
-  if (!apiKey) { showToast('⚠️ Vlož API kľúč!'); return; }
 
   const feature = document.getElementById('exec-feature').value.trim();
   const desc    = document.getElementById('exec-desc').value.trim();
@@ -134,7 +125,7 @@ Odpoveď vráť VÝHRADNE v JSON (žiadny markdown):
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
+        // API key handled by Worker
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -298,7 +289,6 @@ function prefillBugFromTC(idx) {
 
 // ── Execution Summary ─────────────────────
 async function generateExecSummary() {
-  if (!apiKey) { showToast('⚠️ Vlož API kľúč!'); return; }
   const tcs = execSession.testCases;
   if (!tcs.length) { showToast('⚠️ Žiadne test cases!'); return; }
 
@@ -347,7 +337,7 @@ Odpoveď vráť VÝHRADNE v JSON (žiadny markdown):
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
+        // API key handled by Worker
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -508,7 +498,6 @@ Odpoveď VÝHRADNE JSON:
 }
 
 async function generate(tab) {
-  if (!apiKey) { showToast('⚠️ Vlož API kľúč!'); return; }
 
   const btn = document.querySelector(`#form-${tab} .btn-generate`);
   btn.disabled = true;
@@ -524,7 +513,7 @@ async function generate(tab) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
+        // API key handled by Worker
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
